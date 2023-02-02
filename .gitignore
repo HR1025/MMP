@@ -155,4 +155,4 @@ tags
 
 # vscode #
 ##########
-*.vscode
+.vscode/settings.json
