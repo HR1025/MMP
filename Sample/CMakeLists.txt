@@ -11,3 +11,4 @@ list(APPEND Smaple_SRCS
 
 add_executable(${CMAKE_PROJECT_NAME} ${Smaple_SRCS})
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${Smaple_INCS})
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Poco::Foundation) 

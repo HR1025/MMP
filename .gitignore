@@ -152,3 +152,7 @@ releases/
 *.swp
 *.vim
 tags
+
+# vscode #
+##########
+*.vscode
