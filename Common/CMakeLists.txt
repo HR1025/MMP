@@ -9,7 +9,10 @@ list(APPEND Common_INCS
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 list(APPEND Common_SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/Logger.h
     ${CMAKE_CURRENT_SOURCE_DIR}/Logger.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/LogMessage.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/LogMessage.cpp
 )
 
 add_library(Common OBJECT ${Common_SRCS})

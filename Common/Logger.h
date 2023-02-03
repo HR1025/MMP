@@ -5,6 +5,7 @@
 // Package: Log
 // Module:  Logger
 // 
+#pragma once
 
 #include <cstdint>
 #include <string>
@@ -86,6 +87,10 @@ public:
      * @note        针对于 Direction::CUSTOM
      */
     void SetCallback(const LogCallback& logCallback);
+    /**
+     * @brief 单例获取
+     */
+    static Logger& LoggerSingleton();
 private:
     std::map<Direction, bool /* isEnabled */>  _enbaledDirections;
     std::map<Direction, Poco::Channel::Ptr>    _channels;

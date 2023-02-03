@@ -1,11 +1,17 @@
 #include "Logger.h"
 
 #include <cassert>
+#include <thread>
 
 #include <Poco/Channel.h>
 #include <Poco/Message.h>
 #include <Poco/LoggingFactory.h>
 #include <Poco/Instantiator.h>
+#include <Poco/Thread.h>
+#include <Poco/SingletonHolder.h>
+#include <Poco/Timespan.h>
+#include <Poco/DateTimeFormatter.h>
+
 
 namespace Poco
 {
@@ -59,6 +65,80 @@ class CustomChannelInstantiator : public Poco::LoggingFactory::ChannelInstantiat
 
 namespace Mmp
 {
+static Poco::SingletonHolder<Logger> sh;
+
+static const std::string GetCurrentLogTime()
+{
+    return Poco::DateTimeFormatter::format(Poco::Timestamp(), "%Y-%m-%d %H:%M:%S", 8 /* 东八区 */);
+}
+
+static uint64_t GetTid()
+{
+    return Poco::Thread::currentOsTid();
+}
+
+static const std::string LevelToStr(Logger::Level level)
+{
+    std::string levelStr;
+    switch (level)
+    {
+        case Logger::Level::TRACE:
+            levelStr    = "TRACE";
+            break;
+        case Logger::Level::DEBUG:
+            levelStr    = "DEBUG";
+            break;
+        case Logger::Level::INFO:
+            levelStr    = "INFO ";
+            break;
+        case Logger::Level::WARN:
+            levelStr    = "WARN ";
+            break;
+        case Logger::Level::ERROR:
+            levelStr    = "ERROR";
+            break;
+        case Logger::Level::FATAL:
+            levelStr    = "FATAL";
+            break;
+        default:
+            assert(false);
+            levelStr    = "INFO";
+            break;
+    }
+    return levelStr;
+}
+
+static const Poco::Message::Priority LevelToPriority(Logger::Level level)
+{
+    Poco::Message::Priority priority;
+    switch (level)
+    {
+        case Logger::Level::TRACE:
+            priority = Poco::Message::Priority::PRIO_TRACE;
+            break;
+        case Logger::Level::DEBUG:
+            priority = Poco::Message::Priority::PRIO_DEBUG;
+            break;
+        case Logger::Level::INFO:
+            priority = Poco::Message::Priority::PRIO_INFORMATION;
+            break;
+        case Logger::Level::WARN:
+            priority = Poco::Message::Priority::PRIO_WARNING;
+            break;
+        case Logger::Level::ERROR:
+            priority = Poco::Message::Priority::PRIO_ERROR;
+            break;
+        case Logger::Level::FATAL:
+            priority = Poco::Message::Priority::PRIO_FATAL;
+            break;
+        default:
+            assert(false);
+            priority = Poco::Message::Priority::PRIO_INFORMATION;
+            break;
+    }
+    return priority;
+}
+
 Logger::Logger()
 {
     // Hint : 默认赋值防止空指针崩溃
@@ -80,6 +160,9 @@ void Logger::Enable(Direction direction)
         {
             case Direction::CONSLOE:
                 _channels[Direction::CONSLOE] = Poco::LoggingFactory::defaultFactory().createChannel("ColorConsoleChannel");
+                _channels[Direction::CONSLOE]->setProperty("traceColor", "black");
+                _channels[Direction::CONSLOE]->setProperty("informationColor", "blue");
+                _channels[Direction::CONSLOE]->setProperty("warningColor", "brown");
                 _channels[Direction::CONSLOE]->open();
                 break;
             case Direction::FILE:
@@ -110,42 +193,39 @@ void Logger::Disable(Direction direction)
     _enbaledDirections[direction] = false;
 }
 
+Logger& Logger::LoggerSingleton()
+{
+    return *sh.get();
+}
+
 void Logger::Log(uint32_t line, const std::string& fileName, Level level, const std::string& module, const std::string& msg)
 {
-    Poco::Message::Priority priority;
-    switch (level)
+
+    auto GetFullMsg = [&](const std::string& msg) -> std::string
     {
-        case Level::TRACE:
-            priority = Poco::Message::Priority::PRIO_TRACE;
-            break;
-        case Level::DEBUG:
-            priority = Poco::Message::Priority::PRIO_DEBUG;
-            break;
-        case Level::INFO:
-            priority = Poco::Message::Priority::PRIO_INFORMATION;
-            break;
-        case Level::WARN:
-            priority = Poco::Message::Priority::PRIO_WARNING;
-            break;
-        case Level::ERROR:
-            priority = Poco::Message::Priority::PRIO_ERROR;
-            break;
-        case Level::FATAL:
-            priority = Poco::Message::Priority::PRIO_FATAL;
-            break;
-        default:
-            assert(false);
-            priority = Poco::Message::Priority::PRIO_INFORMATION;
-            break;
-    }
+        return std::string() + "[" + GetCurrentLogTime() + "][" + LevelToStr(level) + "][" + std::to_string(GetTid()) 
+                                + "][" + module + "][" + fileName + ":" + std::to_string(line) + "] " + msg;
+    };
+
+    Poco::Message::Priority priority = LevelToPriority(level);
+
     Poco::Message message(module, msg, priority, fileName.c_str(), line);
-
-
+    Poco::Message fullMessage(module, "", priority, fileName.c_str(), line);
+    message.setTid(GetTid());
+    fullMessage.setText(GetFullMsg(msg));
+ 
     for(const auto& enbaledDirection : _enbaledDirections)
     {
         if (enbaledDirection.second)
         {
-            _channels[enbaledDirection.first]->log(message);
+            if (enbaledDirection.first != Direction::CUSTOM)
+            {
+                _channels[enbaledDirection.first]->log(fullMessage);
+            }
+            else
+            {
+                _channels[enbaledDirection.first]->log(message);
+            }
         }
     }
 }

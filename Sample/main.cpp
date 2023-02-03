@@ -2,16 +2,20 @@
 #include <string>
 
 #include "Common/Logger.h"
+#include "Common/LogMessage.h"
 
 int main()
 {
-    Mmp::Logger logger;
+    Mmp::Logger::LoggerSingleton().SetFilePath("./smaple.log");
+    Mmp::Logger::LoggerSingleton().Enable(Mmp::Logger::Direction::CONSLOE);
+    Mmp::Logger::LoggerSingleton().Enable(Mmp::Logger::Direction::FILE);
 
-    logger.SetFilePath("./smaple.log");
-    logger.Enable(Mmp::Logger::Direction::CONSLOE);
-    logger.Enable(Mmp::Logger::Direction::FILE);
-
-    logger.Log(__LINE__, __FILE__, Mmp::Logger::Level::WARN, "Common", "Hello World");
+    MMP_LOG_TRACE("Sample") << "Hello World";
+    MMP_LOG_DEBUG("Sample") << "Hello World";
+    MMP_LOG_INFO("Sample") << "Hello World";
+    MMP_LOG_WARN("Sample") << "Hello World";
+    MMP_LOG_ERROR("Sample") << "Hello World";
+    MMP_LOG_FATAL("Sample") << "Hello World";
 
     return 0;
 }
