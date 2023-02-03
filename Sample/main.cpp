@@ -10,12 +10,12 @@ int main()
     Mmp::Logger::LoggerSingleton().Enable(Mmp::Logger::Direction::CONSLOE);
     Mmp::Logger::LoggerSingleton().Enable(Mmp::Logger::Direction::FILE);
 
-    MMP_LOG_TRACE("Sample") << "Hello World";
-    MMP_LOG_DEBUG("Sample") << "Hello World";
-    MMP_LOG_INFO("Sample") << "Hello World";
-    MMP_LOG_WARN("Sample") << "Hello World";
-    MMP_LOG_ERROR("Sample") << "Hello World";
-    MMP_LOG_FATAL("Sample") << "Hello World";
+    MMP_LOG_TRACE << "Hello World";
+    MMP_LOG_DEBUG << "Hello World";
+    MMP_LOG_INFO << "Hello World";
+    MMP_LOG_WARN << "Hello World";
+    MMP_LOG_ERROR << "Hello World";
+    MMP_LOG_FATAL << "Hello World";
 
     return 0;
 }

@@ -67,6 +67,26 @@ namespace Mmp
 {
 static Poco::SingletonHolder<Logger> sh;
 
+bool operator<(Logger::Level left, Logger::Level right)
+{
+    return static_cast<uint32_t>(left) < static_cast<uint32_t>(right);
+}
+
+bool operator>(Logger::Level left, Logger::Level right)
+{
+    return !(left < right);
+}
+
+bool operator<=(Logger::Level left, Logger::Level right)
+{
+    return (left < right) || (left == right);
+}
+
+bool operator>=(Logger::Level left, Logger::Level right)
+{
+    return (left > right) || (left == right);
+}
+
 static const std::string GetCurrentLogTime()
 {
     return Poco::DateTimeFormatter::format(Poco::Timestamp(), "%Y-%m-%d %H:%M:%S", 8 /* 东八区 */);
@@ -139,8 +159,19 @@ static const Poco::Message::Priority LevelToPriority(Logger::Level level)
     return priority;
 }
 
+void Logger::SetThreshold(Level threshold)
+{
+    _threshold = threshold;
+}
+
+Logger::Level Logger::GetThreshold()
+{
+    return _threshold;
+}
+
 Logger::Logger()
 {
+    _threshold = Level::INFO;
     // Hint : 默认赋值防止空指针崩溃
     Poco::gLogCallback = [](uint32_t line, const std::string& fileName, Level level, const std::string& module, uint32_t tid, uint32_t pid, const std::string msg) -> void
     {
@@ -200,11 +231,22 @@ Logger& Logger::LoggerSingleton()
 
 void Logger::Log(uint32_t line, const std::string& fileName, Level level, const std::string& module, const std::string& msg)
 {
+    if (level < _threshold) return;
 
     auto GetFullMsg = [&](const std::string& msg) -> std::string
     {
-        return std::string() + "[" + GetCurrentLogTime() + "][" + LevelToStr(level) + "][" + std::to_string(GetTid()) 
+        std::string fullMsg;
+        if (!module.empty())
+        {
+            fullMsg = "[" + GetCurrentLogTime() + "][" + LevelToStr(level) + "][" + std::to_string(GetTid()) 
                                 + "][" + module + "][" + fileName + ":" + std::to_string(line) + "] " + msg;
+        }
+        else
+        {
+            fullMsg = "[" + GetCurrentLogTime() + "][" + LevelToStr(level) + "][" + std::to_string(GetTid()) 
+                                + "][" + fileName + ":" + std::to_string(line) + "] " + msg;     
+        }
+        return fullMsg;
     };
 
     Poco::Message::Priority priority = LevelToPriority(level);

@@ -8,8 +8,9 @@
 #pragma once
 
 #include <cstdint>
-#include <string>
 #include <map>
+#include <atomic>
+#include <string>
 #include <functional>
 
 #include <Poco/Channel.h>
@@ -34,7 +35,7 @@ public:
     };
     /**
      * @brief 日志等级
-     * @note  FATAL 在某些情况下会调用 assert 捕获
+     * @note  FATAL 在某些情况下会调用 assert 捕获(暂未实现)
      */
     enum class Level
     {
@@ -88,6 +89,16 @@ public:
      */
     void SetCallback(const LogCallback& logCallback);
     /**
+     * @brief     设置日志等级阈值
+     * @param[in] threshold
+     */
+    void SetThreshold(Level threshold);
+    /**
+     * @brief     获取日志等级阈值
+     * @return    Level
+     */
+    Level GetThreshold();
+    /**
      * @brief 单例获取
      */
     static Logger& LoggerSingleton();
@@ -96,6 +107,13 @@ private:
     std::map<Direction, Poco::Channel::Ptr>    _channels;
     std::string                                _logFile;
     LogCallback                                _LogCallback;
+    std::atomic<Level>                         _threshold;
 };
+
+// Hint : 等于逻辑复用枚举自身的比较
+bool operator<(Logger::Level left, Logger::Level right);
+bool operator>(Logger::Level left, Logger::Level right);
+bool operator<=(Logger::Level left, Logger::Level right);
+bool operator>=(Logger::Level left, Logger::Level right);
 
 } // namespace Mmp
