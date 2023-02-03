@@ -11,6 +11,7 @@
 #include <Poco/SingletonHolder.h>
 #include <Poco/Timespan.h>
 #include <Poco/DateTimeFormatter.h>
+#include <Poco/ConsoleChannel.h>
 
 
 namespace Poco
@@ -19,6 +20,8 @@ static Mmp::Logger::LogCallback gLogCallback;
 
 class CustomChannel : public Channel
 {
+public:
+    using Ptr = AutoPtr<CustomChannel>;
 public:
     void log(const Message& msg) override
     {
@@ -42,6 +45,7 @@ public:
                 break;
             case Message::Priority::PRIO_TRACE:
                 level = Mmp::Logger::Level::TRACE;
+                break;
             default:
                 assert(false);
                 level = Mmp::Logger::Level::INFO;
@@ -51,14 +55,6 @@ public:
                     msg.getTid(), msg.getTid(), msg.getText()
         );
     }    
-};
-
-class CustomChannelInstantiator : public Poco::LoggingFactory::ChannelInstantiator
-{
-    CustomChannel* createInstance() const override
-    {
-        return new CustomChannel();
-    }
 };
 
 } // namespace Poco
@@ -177,7 +173,7 @@ Logger::Logger()
     {
 
     };
-    Poco::LoggingFactory::defaultFactory().registerChannelClass("CustomChannel", new Poco::CustomChannelInstantiator());
+    Poco::LoggingFactory::defaultFactory().registerChannelClass("CustomChannel",  new Poco::Instantiator<Poco::CustomChannel, Poco::Channel>);
 }
 }
 
@@ -203,8 +199,8 @@ void Logger::Enable(Direction direction)
                 _channels[Direction::FILE]->open();
                 break;
             case Direction::CUSTOM:
-                _channels[Direction::FILE] = Poco::LoggingFactory::defaultFactory().createChannel("CustomChannel");
-                _channels[Direction::FILE]->open();
+                _channels[Direction::CUSTOM] = Poco::LoggingFactory::defaultFactory().createChannel("CustomChannel");
+                _channels[Direction::CUSTOM]->open();
                 break;
             default:
                 break;
@@ -250,18 +246,18 @@ void Logger::Log(uint32_t line, const std::string& fileName, Level level, const 
     };
 
     Poco::Message::Priority priority = LevelToPriority(level);
-
     Poco::Message message(module, msg, priority, fileName.c_str(), line);
-    Poco::Message fullMessage(module, "", priority, fileName.c_str(), line);
     message.setTid(GetTid());
-    fullMessage.setText(GetFullMsg(msg));
- 
+    
     for(const auto& enbaledDirection : _enbaledDirections)
     {
         if (enbaledDirection.second)
         {
             if (enbaledDirection.first != Direction::CUSTOM)
             {
+                Poco::Message fullMessage(module, "", priority, fileName.c_str(), line);
+                fullMessage.setTid(GetTid());
+                fullMessage.setText(GetFullMsg(msg));
                 _channels[enbaledDirection.first]->log(fullMessage);
             }
             else

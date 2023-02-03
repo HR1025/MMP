@@ -52,10 +52,10 @@ public:
      * @param  fileName  : 文件名
      * @param  module    : 模块标识
      * @param  tid       : 线程号
-     * @param  pid       : 进程号
+     * @param  pid       : 进程号(不支持)
      * @param  msg       : 日志信息
      */
-    using LogCallback = std::function<void(uint32_t line, const std::string& fileName, Level level, const std::string& module, uint64_t tid, uint64_t pid, const std::string msg)>;
+    using LogCallback = std::function<void(uint32_t line, const std::string& fileName, Level level, const std::string& module, uint64_t tid, uint64_t pid, const std::string& msg)>;
 public:
     Logger();
     /**
