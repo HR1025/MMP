@@ -1,7 +1,13 @@
-#include <iostream>
+#include <memory>
+#include <string>
+
+#include "TestSuit/LogTest.h"
+
+using namespace Mmp;
 
 int main()
 {
-    std::cout << "Hello World" << std::endl;
+    LogTest();
+
     return 0;
 }

@@ -1,0 +1,3 @@
+[submodule "Extension/poco"]
+	path = Extension/poco
+	url = https://github.com/pocoproject/poco.git
