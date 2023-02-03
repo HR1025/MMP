@@ -1,20 +1,17 @@
 #include <memory>
 #include <string>
 
-#include <Poco/Message.h>
-#include <Poco/LoggingFactory.h>
-#include <Poco/FileChannel.h>
-#include <Poco/ConsoleChannel.h>
-
-using namespace Poco;
+#include "Common/Logger.h"
 
 int main()
 {
-    // auto fileChannel
-    auto consoleChannel = LoggingFactory::defaultFactory().createChannel("ConsoleChannel");
+    Mmp::Logger logger;
 
-    Message msg("source", "Hello World", Message::PRIO_WARNING);
-    consoleChannel->log(msg);
+    logger.SetFilePath("./smaple.log");
+    logger.Enable(Mmp::Logger::Direction::CONSLOE);
+    logger.Enable(Mmp::Logger::Direction::FILE);
+
+    logger.Log(__LINE__, __FILE__, Mmp::Logger::Level::WARN, "Common", "Hello World");
 
     return 0;
 }
