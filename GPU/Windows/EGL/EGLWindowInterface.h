@@ -17,6 +17,9 @@
 namespace Mmp
 {
 
+/**
+ * @brief EGL 窗口通用接口定义
+ */
 class EGLWindowInterface
 {
 public:
@@ -33,6 +36,17 @@ public:
      * @return  是否成功
      */
     virtual bool Close() = 0;
+    /**
+     * @brief   设置 surface 类型
+     * @sa      GLSurfaceType
+     * @note    默认为 GLSurfaceType::WINDOWS
+     */
+    virtual void SetSurfaceType(GLSurfaceType surfaceType) = 0;
+    /**
+     * @brief   获取 surface 类型
+     * @sa      GLSurfaceType
+     */
+    virtual GLSurfaceType GetSurfaceType() = 0;
     /**
      * @brief  获取 GPU 产商信息
      */

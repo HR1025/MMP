@@ -24,6 +24,9 @@
 namespace Mmp
 {
 
+/**
+ * @brief EGL_Client_API
+ */
 enum class GLMode
 {
     OPENGL,
@@ -43,20 +46,25 @@ enum class GLSurfaceType
 {
     WINDOWS, // On-Screen  (Default Frame Buffer)
     PBUFFER, // Off-Screen (Default Frame Buffer)
-    PIXMAP,  // Off-Screen (Default Frame Buffer)
+    PIXMAP,  // Off-Screen (Default Frame Buffer) - not support for now
     TEXTURE, // Off-Screen (No Default Frame Buffer)
 };
 const std::string GLSurfaceTypeToStr(GLSurfaceType type);
 extern std::ostream& operator<<(std::ostream& os, GLSurfaceType type);
 
 /**
- * @sa eglspec.1.5.pdf 3.1 Errors
+ * @sa eglspec.1.5.pdf - 3.1 Errors
  */
 std::string EGLErrorToStr(EGLint error);
 
 /**
- * @sa eglspec.1.5.pdf Table 3.1: EGLConfig attributes
+ * @sa eglspec.1.5.pdf - Table 3.1: EGLConfig attributes
  */
 std::string EGLAttributeToStr(EGLint attr);
+
+/**
+ * @sa eglspec.1.5.pdf - Table 3.3: Types of client APIs supported by an EGLConfig
+ */
+std::string EGLRenderableType(EGLint type);
 
 } // namespace Mmp 
