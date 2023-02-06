@@ -105,4 +105,17 @@ std::string EGLAttributeToStr(EGLint attr)
     }
 }
 
+std::string EGLRenderableType(EGLint type)
+{
+    switch (type)
+    {
+        case EGL_OPENGL_BIT: return "OpenGL";
+        case EGL_OPENGL_ES_BIT: return "OpenGL ES 1.x";
+        case EGL_OPENGL_ES2_BIT: return "OpenGL ES 2.x";
+        case EGL_OPENGL_ES3_BIT: return "OpenGL ES 3.x";
+        case EGL_OPENVG_BIT: return "OpenVG 1.x";
+        default: assert(false); return "UNKNOWN";
+    }
+}
+
 } // namespace Mmp

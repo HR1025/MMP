@@ -20,7 +20,11 @@ int main()
 
     // LogTest();
     auto window = EGLWindowFactory::DefaultFactory().CreateEGLWindow("EGLWindowDefault");
+    window->SetSurfaceType(GLSurfaceType::TEXTURE);
     window->Open();
+    window->BindRenderThread(true);
+    window->BindRenderThread(false);
+    window->Close();
 
     return 0;
 }
