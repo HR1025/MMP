@@ -10,7 +10,7 @@
 
 #include <cstdint>
 #include <string>
-#include <pair>
+#include <utility>
 
 #include "EGLCommon.h"
 
@@ -20,7 +20,7 @@ namespace Mmp
 class EGLWindowInterface
 {
 public:
-    using Version = std::pair<uint32_t major, uint32_t minor>;
+    using Version = std::pair<uint32_t /* major */, uint32_t /* minor */>;
     virtual ~EGLWindowInterface();
 public:
     /**
@@ -41,6 +41,6 @@ public:
      * @brief  获取版本
      */
     virtual const Version GetVersion() = 0;
-}
+};
 
 } // namespace Mmp
