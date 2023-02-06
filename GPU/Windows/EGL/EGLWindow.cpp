@@ -152,6 +152,35 @@ bool EGLWindow::Close()
     return true;
 }
 
+bool EGLWindow::BindRenderThread(bool bind)
+{
+    bool res = false;
+    if (bind)
+    {
+        assert(EGL_NO_DISPLAY != _eglDisplay);
+        assert(EGL_NO_CONTEXT != _eglContext);
+        if (eglMakeCurrent(_eglDisplay, _eglSurface, _eglSurface, _eglContext) != EGL_TRUE)
+        {
+            EGLint error = eglGetError();
+            EGL_LOG_ERROR << "(bind) EGL make current fail, error is: " << EGLErrorToStr(error);
+            res = false;
+        }
+        else
+        {
+            EGL_LOG_INFO << "(bind) EGL make current successfully";
+            res = true;
+        }
+    }
+    else
+    {
+        assert(EGL_NO_DISPLAY != _eglDisplay);
+        eglMakeCurrent(_eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+        EGL_LOG_INFO << "(unbind) EGL make current";
+        res = true;
+    }
+    return res;
+}
+
 void EGLWindow::SetSurfaceType(GLSurfaceType surfaceType)
 {
     _surfaceType = surfaceType;

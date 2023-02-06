@@ -27,6 +27,7 @@ class EGLWindow : public EGLWindowInterface
 public:
     bool Open() override;
     bool Close() override;
+    bool BindRenderThread(bool bind) override;
     void SetSurfaceType(GLSurfaceType surfaceType) override;
     GLSurfaceType GetSurfaceType() override;
     const std::string GetVendor() override; 
