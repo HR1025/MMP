@@ -28,12 +28,13 @@ endif()
 if (USE_EGL)
     list(APPEND Windows_SRCS
         ${CMAKE_CURRENT_SOURCE_DIR}/EGL/EGLWindowInterface.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/EGL/EGLWindowInterface.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/EGL/EGLWindow.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/EGL/EGLWindow.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/EGL/EGLWindow.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/EGL/EGLWindowDefault.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/EGL/EGLCommon.h
         ${CMAKE_CURRENT_SOURCE_DIR}/EGL/EGLCommon.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/EGL/EGLWindowFactory.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/EGL/EGLWindowFactory.cpp
     )
 endif()
 

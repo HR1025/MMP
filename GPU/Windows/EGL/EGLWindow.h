@@ -23,10 +23,11 @@ public:
     bool Open() override;
     bool Close() override;
     const std::string GetVendor() override; 
+    GLMode GetGLMode() override;
     const Version GetVersion() override;
 public:
     EGLWindow();
-private:
+protected:
     /**
      * @brief 获取所有 EGL 可选配置
      * @sa    OnChooseEGLConfig
@@ -43,12 +44,14 @@ private: /* EGLWindow Event */
      *        派生类需要从中选取一个自己认为最合适的配置
      */
     virtual EGLConfig  OnChooseEGLConfig() = 0; 
+    void Reset();
 private:
     EGLDisplay    _eglDisplay;
     EGLConfig     _eglConfig;
     EGLSurface    _eglSurface;
     EGLContext    _eglContext;
     std::string   _vendor;
+    GLMode        _glMode;
     uint32_t      _versionMajor;
     uint32_t      _versionMinor;
 };

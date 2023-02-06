@@ -29,6 +29,8 @@ enum class GLMode
     OPENGL,
     OPENGL_ES3,
     OPENGL_ES2, // not support
+    OPENVG,     // not support
+    UNKNOWN,
 };
 const std::string GLModeToStr(GLMode mode);
 extern std::ostream& operator<<(std::ostream& os, GLMode mode);

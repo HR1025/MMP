@@ -12,6 +12,8 @@ const std::string GLModeToStr(GLMode mode)
         case GLMode::OPENGL:     return "OPENGL";
         case GLMode::OPENGL_ES3: return "OPENGL_ES3";
         case GLMode::OPENGL_ES2: return "OPENGL_ES2";
+        case GLMode::OPENVG:     return "OPENVG";
+        case GLMode::UNKNOWN:    return "UNKNOWN";
         default: assert(false); return "UNKNOWN";
     }
 }
