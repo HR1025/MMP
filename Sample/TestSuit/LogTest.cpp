@@ -49,6 +49,10 @@ void LogTest()
     MMP_LOG_ERROR << "Hello World";
     MMP_LOG_FATAL << "Hello World";
     MMP_LOG_INFO;
+
+    LoggerInterface::LoggerSingleton()->Disable(Mmp::LoggerInterface::Direction::CONSLOE);
+    LoggerInterface::LoggerSingleton()->Disable(Mmp::LoggerInterface::Direction::FILE);
+    LoggerInterface::LoggerSingleton()->Disable(Mmp::LoggerInterface::Direction::CUSTOM);
 }
 } // namespace Mmp
 
