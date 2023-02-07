@@ -4,6 +4,7 @@ project(Sample)
 
 set(Smaple_SRCS)
 set(Smaple_INCS)
+set(Sample_LIBS)
 
 list(APPEND Smaple_INCS
     ${MMP_PRO_TOP_DIR}
@@ -22,3 +23,7 @@ add_subdirectory(Common)
 add_executable(Sample ${Smaple_SRCS})
 target_include_directories(Sample PUBLIC ${Smaple_INCS})
 target_link_libraries(Sample PRIVATE Poco::Foundation Mmp::Common Mmp::Windows Sample::Common) 
+
+if (USE_SDL)
+    target_compile_definitions(Sample PRIVATE USE_SDL)
+endif()

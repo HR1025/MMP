@@ -20,7 +20,8 @@ list(APPEND Common_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/Utility.cpp
 )
 
-add_library(Sample_Common OBJECT ${Common_SRCS})
+# Sample_Common 不可以编译为 OBJECT (否则需要自己手动解决递归依赖问题)
+add_library(Sample_Common STATIC ${Common_SRCS})
 add_library(Sample::Common ALIAS Sample_Common)
 target_include_directories(Sample_Common PUBLIC ${Common_INCS})
 target_link_libraries(Sample_Common PRIVATE Poco::Foundation Mmp::Common ${Common_LIBS}) 
