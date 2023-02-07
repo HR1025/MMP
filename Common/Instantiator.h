@@ -2,8 +2,8 @@
 // Instantiator.h
 //
 // Library: Common
-// Package: Utils
-// Module:  Factory
+// Package: Factory
+// Module:  Instantiator
 // 
 
 #pragma once

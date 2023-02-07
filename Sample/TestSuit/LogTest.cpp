@@ -3,24 +3,24 @@
 #include <iostream>
 #include <string>
 
-#include "Common/Logger.h"
+#include "Common/LoggerInterface.h"
 #include "Common/LogMessage.h"
 
 namespace Mmp
 {
 void LogTest()
 {
-    auto customLog = [](uint32_t line, const std::string& fileName, Logger::Level level, const std::string& module, uint64_t tid, uint64_t pid, const std::string msg) -> void
+    auto customLog = [](uint32_t line, const std::string& fileName, LoggerInterface::Level level, const std::string& module, uint64_t tid, uint64_t pid, const std::string msg) -> void
     {
         std::cout << "custom log, line is: " << line << ", filename is: %s" << ", level is: " << static_cast<uint32_t>(level)
                   << ", module is: " << module << ", tid is: " << tid << ", msg is: " << msg << std::endl;
     };
 
-    Logger::LoggerSingleton().SetFilePath("./smaple.log");
-    Logger::LoggerSingleton().SetCallback(customLog);
-    Logger::LoggerSingleton().Enable(Mmp::Logger::Direction::CONSLOE);
-    Logger::LoggerSingleton().Enable(Mmp::Logger::Direction::FILE);
-    Logger::LoggerSingleton().Enable(Mmp::Logger::Direction::CUSTOM);
+    LoggerInterface::LoggerSingleton()->SetFilePath("./smaple.log");
+    LoggerInterface::LoggerSingleton()->SetCallback(customLog);
+    LoggerInterface::LoggerSingleton()->Enable(Mmp::LoggerInterface::Direction::CONSLOE);
+    LoggerInterface::LoggerSingleton()->Enable(Mmp::LoggerInterface::Direction::FILE);
+    LoggerInterface::LoggerSingleton()->Enable(Mmp::LoggerInterface::Direction::CUSTOM);
 
     // 通用日志输出
     MMP_LOG_TRACE << "Hello World";
@@ -41,7 +41,7 @@ void LogTest()
     MMP_MLOG_FATAL("Common");
 
     // 修改日志等级阈值
-    Mmp::Logger::LoggerSingleton().SetThreshold(Mmp::Logger::Level::TRACE);
+    Mmp::LoggerInterface::LoggerSingleton()->SetThreshold(Mmp::LoggerInterface::Level::TRACE);
     MMP_LOG_TRACE << "Hello World";
     MMP_LOG_DEBUG << "Hello World";
     MMP_LOG_INFO  << "Hello World";
@@ -49,6 +49,10 @@ void LogTest()
     MMP_LOG_ERROR << "Hello World";
     MMP_LOG_FATAL << "Hello World";
     MMP_LOG_INFO;
+
+    LoggerInterface::LoggerSingleton()->Disable(Mmp::LoggerInterface::Direction::CONSLOE);
+    LoggerInterface::LoggerSingleton()->Disable(Mmp::LoggerInterface::Direction::FILE);
+    LoggerInterface::LoggerSingleton()->Disable(Mmp::LoggerInterface::Direction::CUSTOM);
 }
 } // namespace Mmp
 

@@ -9,8 +9,8 @@ list(APPEND Common_INCS
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 list(APPEND Common_SRCS
-    ${CMAKE_CURRENT_SOURCE_DIR}/Logger.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/Logger.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/LoggerInterface.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/LoggerInterface.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LogMessage.h
     ${CMAKE_CURRENT_SOURCE_DIR}/LogMessage.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Instantiator.h

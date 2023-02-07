@@ -5,10 +5,10 @@
 namespace Mmp
 {
 
-LogMessage::LogMessage(Logger::Level level, const std::string& fileName, uint32_t line, const std::string& module)
+LogMessage::LogMessage(LoggerInterface::Level level, const std::string& fileName, uint32_t line, const std::string& module)
 {
     _level    = level;
-    if (_level >= Logger::LoggerSingleton().GetThreshold())
+    if (_level >= LoggerInterface::LoggerSingleton()->GetThreshold())
     {
         _fileName = Poco::Path(fileName).getFileName();
         _line     = line;
@@ -19,9 +19,9 @@ LogMessage::LogMessage(Logger::Level level, const std::string& fileName, uint32_
 
 LogMessage::~LogMessage()
 {
-    if (_level >= Logger::LoggerSingleton().GetThreshold())
+    if (_level >= LoggerInterface::LoggerSingleton()->GetThreshold())
     {
-        Logger::LoggerSingleton().Log(_line, _fileName, _level, _module, _ss.str());
+        LoggerInterface::LoggerSingleton()->Log(_line, _fileName, _level, _module, _ss.str());
     }
 }
 
