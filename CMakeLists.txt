@@ -14,7 +14,7 @@ add_subdirectory(Common)
 add_subdirectory(GPU)
 
 set(MMP_System_Device)
-include(ultis)
+include(utility)
 
 message("-- System Name : ${CMAKE_SYSTEM_NAME}")
 message("-- System Device : ${MMP_System_Device}")

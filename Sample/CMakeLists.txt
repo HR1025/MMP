@@ -14,6 +14,8 @@ list(APPEND Smaple_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/TestSuit/LogTest.cpp
 )
 
+add_subdirectory(Common)
+
 add_executable(Sample ${Smaple_SRCS})
 target_include_directories(Sample PUBLIC ${Smaple_INCS})
-target_link_libraries(Sample PRIVATE Poco::Foundation Mmp::Common Mmp::Windows) 
+target_link_libraries(Sample PRIVATE Poco::Foundation Mmp::Common Mmp::Windows Sample::Common) 
