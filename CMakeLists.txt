@@ -3,6 +3,7 @@ project(MMP DESCRIPTION "Multi Media Plugin")
 
 # GPU Window
 option(USE_EGL ON)
+option(USE_SDL OFF) # 目前用于 x86 上创建调试窗口 (软件)
 
 set(MMP_PRO_TOP_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
