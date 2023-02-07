@@ -1,5 +1,5 @@
 //
-// Logger.h
+// LoggerInterface.h
 //
 // Library: Common
 // Package: Log
@@ -13,15 +13,14 @@
 #include <string>
 #include <functional>
 
-#include <Poco/Channel.h>
-
 namespace Mmp
 {
+
 /**
  * @brief    日志器
  * @note     非线程安全
  */
-class Logger final
+class LoggerInterface
 {
 public:
     /**
@@ -57,15 +56,15 @@ public:
      */
     using LogCallback = std::function<void(uint32_t line, const std::string& fileName, Level level, const std::string& module, uint64_t tid, uint64_t pid, const std::string& msg)>;
 public:
-    Logger();
+    virtual ~LoggerInterface() = default;
     /**
      * @brief 使能
      */
-    void Enable(Direction direction);
+    virtual void Enable(Direction direction) = 0;
     /**
      * @brief 关闭
      */
-    void Disable(Direction direction);
+    virtual void Disable(Direction direction) = 0;
     /**
      * @brief     日志输出
      * @param[in] line
@@ -75,45 +74,38 @@ public:
      * @param[in] msg  
      * @sa        LogCallback
      */
-    void Log(uint32_t line, const std::string& fileName, Level level, const std::string& module, const std::string& msg);
+    virtual void Log(uint32_t line, const std::string& fileName, Level level, const std::string& module, const std::string& msg) = 0;
     /**
      * @brief       设置日志文件路径
      * @param[in]   filePath
      * @note        针对于 Direction::FILE
      */
-    void SetFilePath(const std::string& filePath);
+    virtual void SetFilePath(const std::string& filePath) = 0;
     /**
      * @brief       设置日志回调
      * @param[in]   logCallback
      * @note        针对于 Direction::CUSTOM
      */
-    void SetCallback(const LogCallback& logCallback);
+    virtual void SetCallback(const LogCallback& logCallback) = 0;
     /**
      * @brief     设置日志等级阈值
      * @param[in] threshold
      */
-    void SetThreshold(Level threshold);
+    virtual void SetThreshold(Level threshold) = 0;
     /**
      * @brief     获取日志等级阈值
      * @return    Level
      */
-    Level GetThreshold();
+    virtual Level GetThreshold() = 0;
     /**
      * @brief 单例获取
      */
-    static Logger& LoggerSingleton();
-private:
-    std::map<Direction, bool /* isEnabled */>  _enbaledDirections;
-    std::map<Direction, Poco::Channel::Ptr>    _channels;
-    std::string                                _logFile;
-    LogCallback                                _LogCallback;
-    std::atomic<Level>                         _threshold;
+    static LoggerInterface* LoggerSingleton();
 };
 
 // Hint : 等于逻辑复用枚举自身的比较
-bool operator<(Logger::Level left, Logger::Level right);
-bool operator>(Logger::Level left, Logger::Level right);
-bool operator<=(Logger::Level left, Logger::Level right);
-bool operator>=(Logger::Level left, Logger::Level right);
-
+bool operator<(LoggerInterface::Level left, LoggerInterface::Level right);
+bool operator>(LoggerInterface::Level left, LoggerInterface::Level right);
+bool operator<=(LoggerInterface::Level left, LoggerInterface::Level right);
+bool operator>=(LoggerInterface::Level left, LoggerInterface::Level right);
 } // namespace Mmp

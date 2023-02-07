@@ -3,7 +3,7 @@
 #include <cassert>
 #include <mutex>
 
-#include "Common/Logger.h"
+#include "Common/LoggerInterface.h"
 #include "Common/LogMessage.h"
 
 namespace Mmp
@@ -12,7 +12,7 @@ namespace Mmp
 static std::mutex isLoggerInitedMtx;
 static bool isLoggerInited = false;
 
-void InitLogger(bool isNeedConsle, bool isNeedFile, const std::string& logFilePath, Logger::Level level)
+void InitLogger(bool isNeedConsle, bool isNeedFile, const std::string& logFilePath, LoggerInterface::Level level)
 {
     std::lock_guard<std::mutex> lock(isLoggerInitedMtx);
     
@@ -22,14 +22,14 @@ void InitLogger(bool isNeedConsle, bool isNeedFile, const std::string& logFilePa
 
     if (isNeedConsle)
     {
-        Logger::LoggerSingleton().Enable(Mmp::Logger::Direction::CONSLOE);
+        LoggerInterface::LoggerSingleton()->Enable(Mmp::LoggerInterface::Direction::CONSLOE);
     }
     if (isNeedFile)
     {
-        Logger::LoggerSingleton().SetFilePath(logFilePath);
-        Logger::LoggerSingleton().Enable(Mmp::Logger::Direction::FILE);
+        LoggerInterface::LoggerSingleton()->SetFilePath(logFilePath);
+        LoggerInterface::LoggerSingleton()->Enable(Mmp::LoggerInterface::Direction::FILE);
     }
-    Logger::LoggerSingleton().SetThreshold(level);
+    LoggerInterface::LoggerSingleton()->SetThreshold(level);
     isLoggerInited = true;
 }
 

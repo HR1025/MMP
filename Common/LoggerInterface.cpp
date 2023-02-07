@@ -1,4 +1,4 @@
-#include "Logger.h"
+#include "LoggerInterface.h"
 
 #include <cassert>
 #include <thread>
@@ -16,8 +16,11 @@
 
 namespace Poco
 {
-static Mmp::Logger::LogCallback gLogCallback;
+static Mmp::LoggerInterface::LogCallback gLogCallback;
 
+/**
+ * @brief 自定义日志输出通道,目前用于日志回调的实现
+ */
 class CustomChannel : public Channel
 {
 public:
@@ -25,30 +28,30 @@ public:
 public:
     void log(const Message& msg) override
     {
-        Mmp::Logger::Level level;
+        Mmp::LoggerInterface::Level level;
         switch (msg.getPriority())
         {
             case Message::Priority::PRIO_FATAL:
-                level = Mmp::Logger::Level::FATAL;
+                level = Mmp::LoggerInterface::Level::FATAL;
                 break;
             case Message::Priority::PRIO_ERROR:
-                level = Mmp::Logger::Level::ERROR;
+                level = Mmp::LoggerInterface::Level::ERROR;
                 break;
             case Message::Priority::PRIO_WARNING:
-                level = Mmp::Logger::Level::WARN;
+                level = Mmp::LoggerInterface::Level::WARN;
                 break;
             case Message::Priority::PRIO_INFORMATION:
-                level = Mmp::Logger::Level::INFO;
+                level = Mmp::LoggerInterface::Level::INFO;
                 break;
             case Message::Priority::PRIO_DEBUG:
-                level = Mmp::Logger::Level::DEBUG;
+                level = Mmp::LoggerInterface::Level::DEBUG;
                 break;
             case Message::Priority::PRIO_TRACE:
-                level = Mmp::Logger::Level::TRACE;
+                level = Mmp::LoggerInterface::Level::TRACE;
                 break;
             default:
                 assert(false);
-                level = Mmp::Logger::Level::INFO;
+                level = Mmp::LoggerInterface::Level::INFO;
                 break;
         }
         gLogCallback(msg.getSourceLine(), msg.getSourceFile(), level, msg.getSource(),
@@ -59,26 +62,24 @@ public:
 
 } // namespace Poco
 
-namespace Mmp
+namespace Mmp // 杂项代码
 {
-static Poco::SingletonHolder<Logger> sh;
-
-bool operator<(Logger::Level left, Logger::Level right)
+bool operator<(LoggerInterface::Level left, LoggerInterface::Level right)
 {
     return static_cast<uint32_t>(left) < static_cast<uint32_t>(right);
 }
 
-bool operator>(Logger::Level left, Logger::Level right)
+bool operator>(LoggerInterface::Level left, LoggerInterface::Level right)
 {
     return !(left < right);
 }
 
-bool operator<=(Logger::Level left, Logger::Level right)
+bool operator<=(LoggerInterface::Level left, LoggerInterface::Level right)
 {
     return (left < right) || (left == right);
 }
 
-bool operator>=(Logger::Level left, Logger::Level right)
+bool operator>=(LoggerInterface::Level left, LoggerInterface::Level right)
 {
     return (left > right) || (left == right);
 }
@@ -93,27 +94,27 @@ static uint64_t GetTid()
     return Poco::Thread::currentOsTid();
 }
 
-static const std::string LevelToStr(Logger::Level level)
+static const std::string LevelToStr(LoggerInterface::Level level)
 {
     std::string levelStr;
     switch (level)
     {
-        case Logger::Level::TRACE:
+        case LoggerInterface::Level::TRACE:
             levelStr    = "TRACE";
             break;
-        case Logger::Level::DEBUG:
+        case LoggerInterface::Level::DEBUG:
             levelStr    = "DEBUG";
             break;
-        case Logger::Level::INFO:
+        case LoggerInterface::Level::INFO:
             levelStr    = "INFO ";
             break;
-        case Logger::Level::WARN:
+        case LoggerInterface::Level::WARN:
             levelStr    = "WARN ";
             break;
-        case Logger::Level::ERROR:
+        case LoggerInterface::Level::ERROR:
             levelStr    = "ERROR";
             break;
-        case Logger::Level::FATAL:
+        case LoggerInterface::Level::FATAL:
             levelStr    = "FATAL";
             break;
         default:
@@ -124,27 +125,27 @@ static const std::string LevelToStr(Logger::Level level)
     return levelStr;
 }
 
-static const Poco::Message::Priority LevelToPriority(Logger::Level level)
+static const Poco::Message::Priority LevelToPriority(LoggerInterface::Level level)
 {
     Poco::Message::Priority priority;
     switch (level)
     {
-        case Logger::Level::TRACE:
+        case LoggerInterface::Level::TRACE:
             priority = Poco::Message::Priority::PRIO_TRACE;
             break;
-        case Logger::Level::DEBUG:
+        case LoggerInterface::Level::DEBUG:
             priority = Poco::Message::Priority::PRIO_DEBUG;
             break;
-        case Logger::Level::INFO:
+        case LoggerInterface::Level::INFO:
             priority = Poco::Message::Priority::PRIO_INFORMATION;
             break;
-        case Logger::Level::WARN:
+        case LoggerInterface::Level::WARN:
             priority = Poco::Message::Priority::PRIO_WARNING;
             break;
-        case Logger::Level::ERROR:
+        case LoggerInterface::Level::ERROR:
             priority = Poco::Message::Priority::PRIO_ERROR;
             break;
-        case Logger::Level::FATAL:
+        case LoggerInterface::Level::FATAL:
             priority = Poco::Message::Priority::PRIO_FATAL;
             break;
         default:
@@ -154,13 +155,41 @@ static const Poco::Message::Priority LevelToPriority(Logger::Level level)
     }
     return priority;
 }
+} // namespace Mmp
+
+namespace Mmp
+{
+/**
+ * @brief    日志器
+ * @note     非线程安全
+ */
+class Logger : public LoggerInterface
+{
+public:
+    Logger();
+    void Enable(Direction direction) override;
+    void Disable(Direction direction) override;
+    void Log(uint32_t line, const std::string& fileName, Level level, const std::string& module, const std::string& msg) override;
+    void SetFilePath(const std::string& filePath) override;
+    void SetCallback(const LogCallback& logCallback) override;
+    void SetThreshold(Level threshold) override;
+    Level GetThreshold() override;
+private:
+    std::map<LoggerInterface::Direction, bool /* isEnabled */>  _enbaledDirections;
+    std::map<LoggerInterface::Direction, Poco::Channel::Ptr>    _channels;
+    std::string                                                 _logFile;
+    LogCallback                                                 _LogCallback;
+    std::atomic<LoggerInterface::Level>                         _threshold;
+};
+
+static Poco::SingletonHolder<Logger> sh;
 
 void Logger::SetThreshold(Level threshold)
 {
     _threshold = threshold;
 }
 
-Logger::Level Logger::GetThreshold()
+LoggerInterface::Level Logger::GetThreshold()
 {
     return _threshold;
 }
@@ -220,9 +249,9 @@ void Logger::Disable(Direction direction)
     _enbaledDirections[direction] = false;
 }
 
-Logger& Logger::LoggerSingleton()
+LoggerInterface* LoggerInterface::LoggerSingleton()
 {
-    return *sh.get();
+    return sh.get();
 }
 
 void Logger::Log(uint32_t line, const std::string& fileName, Level level, const std::string& module, const std::string& msg)

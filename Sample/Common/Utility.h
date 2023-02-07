@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "Common/Logger.h"
+#include "Common/LoggerInterface.h"
 
 namespace Mmp
 {
@@ -22,6 +22,6 @@ namespace Mmp
  * @note        1 - logFilePath 仅当 isNeedFile 为 true 时生效, 且 isNeedFile 为 true 时 logFilePath 需要是一个合法路径
  *              2 - 可重入,但是仅第一次配置有效
  */
-void InitLogger(bool isNeedConsle = true, bool isNeedFile = false, const std::string& logFilePath = "", Logger::Level level = Logger::Level::DEBUG);
+void InitLogger(bool isNeedConsle = true, bool isNeedFile = false, const std::string& logFilePath = "", LoggerInterface::Level level = LoggerInterface::Level::DEBUG);
 
 };
