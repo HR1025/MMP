@@ -15,6 +15,10 @@ list(APPEND Common_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/LogMessage.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Instantiator.h
     ${CMAKE_CURRENT_SOURCE_DIR}/DynamicFactory.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/MetaProgramming.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Placeholder.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/ValueHolder.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Any.h
 )
 
 add_library(Common OBJECT ${Common_SRCS})
