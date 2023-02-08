@@ -12,8 +12,9 @@ using namespace Mmp;
 int main()
 {
     // LogTest();
+    AnyTest();
     // WindowsEGLTest();
-    DisplaySDLTest();
+    // DisplaySDLTest();
 
     return 0;
 }

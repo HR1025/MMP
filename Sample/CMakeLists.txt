@@ -18,6 +18,8 @@ list(APPEND Smaple_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/TestSuit/LogTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/TestSuit/DisplaySDLTest.h
     ${CMAKE_CURRENT_SOURCE_DIR}/TestSuit/DisplaySDLTest.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/TestSuit/AnyTest.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/TestSuit/AnyTest.cpp
 )
 
 add_subdirectory(Common)
