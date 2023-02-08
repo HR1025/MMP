@@ -35,6 +35,8 @@ endif()
 
 if (USE_OPENGL)
     list(APPEND GL_SRCS
+        ${CMAKE_CURRENT_SOURCE_DIR}/OpenGL/OpenGLCommond.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/OpenGL/OpenGLCommond.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/OpenGL/OpenGL.h 
         ${CMAKE_CURRENT_SOURCE_DIR}/OpenGL/OpenGL.cpp
     )
