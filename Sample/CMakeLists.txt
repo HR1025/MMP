@@ -18,6 +18,8 @@ list(APPEND Smaple_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/TestSuit/LogTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/TestSuit/DisplaySDLTest.h
     ${CMAKE_CURRENT_SOURCE_DIR}/TestSuit/DisplaySDLTest.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/TestSuit/AnyTest.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/TestSuit/AnyTest.cpp
 )
 
 add_subdirectory(Common)
@@ -26,6 +28,12 @@ add_executable(Sample ${Smaple_SRCS})
 target_include_directories(Sample PUBLIC ${Smaple_INCS})
 target_link_libraries(Sample PRIVATE Poco::Foundation Mmp::Common Mmp::Windows Sample::Common) 
 
+if (USE_EGL)
+    target_compile_definitions(Sample PRIVATE USE_EGL)
+endif()
+if (USE_OPENGL)
+    target_compile_definitions(Sample PRIVATE USE_OPENGL)
+endif()
 if (USE_SDL)
     target_compile_definitions(Sample PRIVATE USE_SDL)
 endif()

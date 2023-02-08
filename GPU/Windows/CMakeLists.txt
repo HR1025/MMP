@@ -11,11 +11,19 @@ list(APPEND Windows_INCS
 )
 
 if (USE_EGL)
-    if (NOT OpenGL_FOUND) # 交叉编译时需外部设置
-        find_package(OpenGL COMPONENTS EGL REQUIRED)
+    # see also : https://cmake.org/cmake/help/latest/module/FindOpenGL.html
+    if (NOT OPENGL_FOUND) # 交叉编译时需外部设置
+        if (CMAKE_HOST_UNIX)
+            set(OpenGL_GL_PREFERENCE GLVND)
+        endif()
+        find_package(OpenGL REQUIRED)
     endif()
+    message("-- Found EGL")
+    message("  -- EGL INCS : ${OPENGL_INCLUDE_DIR}")
+    message("  -- EGL LIB DIR : ${OpenGL_LIBRARY_DIRS}")
+    message("  -- EGL LIBS : ${OPENGL_LIBRARIES}")
     list(APPEND Windows_INCS ${OPENGL_INCLUDE_DIR})
-    list(APPEND Windows_LIB_DIR ${OPENGL_LIBRARY})
+    list(APPEND Windows_LIB_DIR ${OpenGL_LIBRARY_DIRS})
     list(APPEND Windows_LIBS OpenGL::EGL)
 endif()
  
@@ -42,6 +50,7 @@ add_library(Windows OBJECT ${Windows_SRCS})
 add_library(Mmp::Windows ALIAS Windows)
 target_include_directories(Windows PUBLIC ${Windows_INCS})
 target_link_libraries(Windows PRIVATE ${Windows_LIBS} Poco::Foundation Mmp::Common) 
-if (NOT Windows_LIB_DIR)
+list(LENGTH Windows_LIB_DIR Windows_LIB_DIR_LEN)
+if (NOT(${Windows_LIB_DIR_LEN} EQUAL 0))
     target_link_directories(Windows ${Windows_LIB_DIR})
 endif()

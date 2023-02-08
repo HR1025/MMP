@@ -1,13 +1,16 @@
 #include "DisplaySDLTest.h"
 
+#ifdef USE_SDL
 #include <thread>
 
 #include "Sample/Common/Utility.h"
 #include "Sample/Common/Display/SDL/DisplaySDL.h"
+#endif /* USE_SDL */
 
 namespace Mmp
 {
 
+#ifdef USE_SDL
 void DisplaySDLTest()
 {
     InitLogger();
@@ -34,5 +37,11 @@ void DisplaySDLTest()
 
     return;
 }
+#else
+void DisplaySDLTest()
+{
+
+}
+#endif /* USE_SDL */
 
 } // namespace Mmp
