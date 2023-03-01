@@ -1,3 +1,6 @@
 [submodule "Extension/poco"]
 	path = Extension/poco
 	url = https://github.com/pocoproject/poco.git
+[submodule "Extension/media-server"]
+	path = Extension/media-server
+	url = https://github.com/ireader/media-server.git
