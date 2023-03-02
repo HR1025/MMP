@@ -16,7 +16,7 @@ int main()
     // AnyTest();
     // WindowsEGLTest();
     // DisplaySDLTest();
-    MpegTsDemuxTest(kTsPath, "");
+    MpegTsDemuxTest(kTsPath);
 
     return 0;
 }
