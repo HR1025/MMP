@@ -23,10 +23,11 @@ list(APPEND Smaple_SRCS
 )
 
 add_subdirectory(Common)
+add_subdirectory(Extension)
 
 add_executable(Sample ${Smaple_SRCS})
 target_include_directories(Sample PUBLIC ${Smaple_INCS})
-target_link_libraries(Sample PRIVATE Poco::Foundation Mmp::Common Mmp::Windows Sample::Common) 
+target_link_libraries(Sample PRIVATE Poco::Foundation Mmp::Common Mmp::Windows Sample::Common Sample::Extension) 
 
 if (USE_EGL)
     target_compile_definitions(Sample PRIVATE USE_EGL)
