@@ -37,5 +37,9 @@ list(APPEND GLEW_SRCS
 
 add_library(GLEW STATIC ${GLEW_SRCS})
 add_library(Mmp::GLEW ALIAS GLEW)
+target_compile_definitions(GLEW PUBLIC GLEW_STATIC)
+if (USE_EGL)
+    target_compile_definitions(GLEW PUBLIC GLEW_EGL)
+endif()
 target_include_directories(GLEW PUBLIC ${GLEW_INCS})
-target_link_libraries(GLEW PRIVATE GLEW_LIBS)
+target_link_libraries(GLEW PRIVATE ${GLEW_LIBS})
